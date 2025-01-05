@@ -1,24 +1,15 @@
-import AppBar from "../AppBar/AppBar"
+import { Outlet } from 'react-router-dom';
+import AppBar from '../AppBar/AppBar';
 
-// eslint-disable-next-line react/prop-types
-const Layout = ({children}) => {
+const Layout = () => {
   return (
     <>
-    <AppBar />
-    <div>
-
-
-    {/* children prop'u render edilir */}
-    <main>
-      {children}
-    </main>
-    </div>
-    
+      <AppBar />
+      <main>
+        <Outlet />
+      </main>
     </>
+  );
+};
 
-  )
-}
-
-export default Layout
-
-
+export default Layout;

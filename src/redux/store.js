@@ -1,35 +1,32 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-import contactsReducer from './contacts/slice';
-import filtersReducer from './filters/slice';
-import authReducer from './auth/slice'; 
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import authReducer from "./auth/authSlice";
+import contactsReducer from "./contacts/slice";
+import storage from "redux-persist/lib/storage";
+import { persistReducer, persistStore } from "redux-persist";
+import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
 
+//  Redux Persist için auth yapılandırması
 const authPersistConfig = {
-  key: 'auth', // Bu alan sadece auth reducer için kullanılacak
+  key: "auth",
   storage,
-  whitelist: ['token'], // Sadece token alanını persist etmek istiyoruz
+  whitelist: ["token", "user"], //  Kullanıcı verisini de sakla
+  stateReconciler: autoMergeLevel2, //  Veriyi doğru formatta sakla
 };
 
+//  Redux'un rootReducer'ı
+const rootReducer = combineReducers({
+  auth: persistReducer(authPersistConfig, authReducer),
+  contacts: contactsReducer,
+});
 
-
-const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
-
+//  Persist Edilmiş Reducer Kullanarak Store'u Kur
 export const store = configureStore({
-  reducer: {
-    contacts: contactsReducer, // contacts reducer doğrudan atanıyor
-    filters: filtersReducer,  // filters reducer doğrudan atanıyor
-    auth: persistedAuthReducer, // auth reducer persist edilmiş haliyle atanıyor
-  },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: {
-        // redux-persist ile ilgili action'ları kontrol dışı bırak
-        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
-      },
+      serializableCheck: false, // Persist edilen veriler için kontrolü kapat
     }),
 });
 
-export default store;
-export let persistor = persistStore(store);
-
+//  Persistor'u oluştur (Sayfa yenilendiğinde state'i korur)
+export const persistor = persistStore(store);

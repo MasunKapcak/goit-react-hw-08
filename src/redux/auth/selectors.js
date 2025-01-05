@@ -1,5 +1,6 @@
-/* 
-    selectIsLoggedIn seçici fonksiyonu mevcut ve dışa aktarılıyor.
-    selectUser seçici fonksiyonu mevcut ve dışa aktarılıyor.
-    selectIsRefreshing seçici fonksiyonu mevcut ve dışa aktarılıyor.
-*/
+// Kullanıcının giriş yapıp yapmadığını kontrol eden selector
+export const selectIsLoggedIn = (state) => state.auth.isLoggedIn;
+
+// Diğer selectorlar da buraya eklenebilir
+export const selectUser = (state) => state.auth.user;
+export const selectAuthToken = (state) => state.auth.token;
