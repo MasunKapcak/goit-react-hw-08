@@ -1,32 +1,35 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import authReducer from "./auth/authSlice";
-import contactsReducer from "./contacts/slice";
-import storage from "redux-persist/lib/storage";
-import { persistReducer, persistStore } from "redux-persist";
-import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
+import { configureStore } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import contactsReducer from './contacts/slice';
+import filtersReducer from './filters/slice';
+import authReducer from './auth/slice'; 
 
-//  Redux Persist için auth yapılandırması
 const authPersistConfig = {
-  key: "auth",
+  key: 'auth', // Bu alan sadece auth reducer için kullanılacak
   storage,
-  whitelist: ["token", "user"], //  Kullanıcı verisini de sakla
-  stateReconciler: autoMergeLevel2, //  Veriyi doğru formatta sakla
+  whitelist: ['token'], // Sadece token alanını persist etmek istiyoruz
 };
 
-//  Redux'un rootReducer'ı
-const rootReducer = combineReducers({
-  auth: persistReducer(authPersistConfig, authReducer),
-  contacts: contactsReducer,
-});
 
-//  Persist Edilmiş Reducer Kullanarak Store'u Kur
+
+const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
+
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: {
+    contacts: contactsReducer, // contacts reducer doğrudan atanıyor
+    filters: filtersReducer,  // filters reducer doğrudan atanıyor
+    auth: persistedAuthReducer, // auth reducer persist edilmiş haliyle atanıyor
+  },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false, // Persist edilen veriler için kontrolü kapat
+      serializableCheck: {
+        // redux-persist ile ilgili action'ları kontrol dışı bırak
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+      },
     }),
 });
 
-//  Persistor'u oluştur (Sayfa yenilendiğinde state'i korur)
-export const persistor = persistStore(store);
+export default store;
+export let persistor = persistStore(store);
+

@@ -1,11 +1,13 @@
+import { NavLink } from "react-router-dom";
+import Styles from './Navigation.module.css'
 const Navigation = () => {
-    return (
-      <nav>
-        <a href="/">Home</a>
-        <a href="/contacts">Contacts</a>
-      </nav>
-    );
-  };
   
-  export default Navigation;
-  
+  return (
+    <div className={Styles.pageLinks}>
+        <NavLink to="/home" className={Styles.homeLink}>Home</NavLink>
+        <NavLink to="/contacts" className={Styles.contactLink}>Contacts</NavLink>
+     </div>
+  )
+}
+
+export default Navigation

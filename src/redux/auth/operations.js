@@ -1,52 +1,21 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { authAxiosInstance, setAuthAxios } from "../api/authAxios";
+import axios from "axios";
 
-// Register
-export const register = createAsyncThunk(
-  "auth/register",
-  async (userData, thunkAPI) => {
-    try {
-      const response = await authAxiosInstance.post("/users/signup", userData);
-      return response.data;
-    } catch (error) {
-      console.error("REGISTER Error:", error.message);
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
+axios.defaults.baseURL= 'https://connections-api.herokuapp.com'
 
-// Login
-export const login = createAsyncThunk(
-  "auth/login",
-  async (userData, thunkAPI) => {
-    try {
-      const response = await authAxiosInstance.post("/users/login", userData);
-      const token = response.data.token;
+export const registerUser = createAsyncThunk("auth/register",async()=>{
+//post istegi , try…catch , catch bloğunda thunkAPI.rejectWithValue
+})
 
-      if (token) {
-        setAuthAxios(token);
-      }
 
-      return response.data;
-    } catch (error) {
-      console.error("LOGIN Error:", error.message);
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
+export const loginUser = createAsyncThunk("auth/login",async()=>{
+    
+})
 
-// Logout
-export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
-  const token = thunkAPI.getState().auth.token;
+export const logoutUser = createAsyncThunk("auth/logout",async()=>{
+    
+})
 
-  if (token) {
-    setAuthAxios(token);
-    try {
-      await authAxiosInstance.post("/users/logout");
-      setAuthAxios(null);
-    } catch (error) {
-      console.error("LOGOUT Error:", error.message);
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-});
+export const refreshUser = createAsyncThunk("auth/refresh",async()=>{
+    
+})  

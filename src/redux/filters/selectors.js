@@ -1,1 +1,1 @@
-export const selectNameFilter = (state) => state.filters.nameFilter; // İsim filtresini seçer
+export const selectNameFilter = (state) => state.filters.name;
